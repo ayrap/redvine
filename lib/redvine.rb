@@ -11,10 +11,10 @@ class Redvine
   @@userAgent = 'iphone/1.3.1 (iPhone; iOS 6.1.3; Scale/2.00) (Redvine)'
 
   def connect(opts={})
-    validate_connect_args(opts)
-    query = {username: opts[:email], password: opts[:password], deviceToken: @@deviceToken}
     headers = {'User-Agent' => @@userAgent}
-    response = HTTParty.post(@@baseUrl + 'users/authenticate', {body: query, headers: headers})
+    query = get_query(opts)
+    url = isTwitter ? 'users/authenticate/twitter' : 'users/authenticate'
+    response = HTTParty.post(@@baseUrl + url, {body: query, headers: headers})
     @vine_key = response.parsed_response['data']['key']
     @username = response.parsed_response['data']['username']
     @user_id = response.parsed_response['data']['userId']
@@ -77,5 +77,13 @@ class Redvine
     end
   end
 
+  def get_query(isTwitter)
+    if isTwitter?
+      {twitterId: opts[:twitterId], twitterOauthSecret: opts[:twitterOauthSecret], twitterOauthToken: opts[:twitterOauthToken], deviceToken: @@deviceToken}
+    else
+      validate_connect_args(opts)
+      return {username: opts[:email], password: opts[:password], deviceToken: @@deviceToken}
+    end
+  end
 end
 
