@@ -13,7 +13,7 @@ class Redvine
   def connect(opts={})
     headers = {'User-Agent' => @@userAgent}
     query = get_query(opts)
-    url = isTwitter ? 'users/authenticate/twitter' : 'users/authenticate'
+    url = opts[:isTwitter] ? 'users/authenticate/twitter' : 'users/authenticate'
     response = HTTParty.post(@@baseUrl + url, {body: query, headers: headers})
     @vine_key = response.parsed_response['data']['key']
     @username = response.parsed_response['data']['username']
