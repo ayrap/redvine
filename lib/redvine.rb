@@ -49,6 +49,15 @@ class Redvine
 
 
   private
+  def get_query(opts={})
+    if opts[:isTwitter]?
+      {twitterId: opts[:twitterId], twitterOauthSecret: opts[:twitterOauthSecret], twitterOauthToken: opts[:twitterOauthToken], deviceToken: @@deviceToken}
+    else
+      validate_connect_args(opts)
+      return {username: opts[:email], password: opts[:password], deviceToken: @@deviceToken}
+    end
+  end
+  
   def validate_connect_args(opts={})
     unless opts.has_key?(:email) and opts.has_key?(:email)
       raise(ArgumentError, 'You must specify both :email and :password')
@@ -74,15 +83,6 @@ class Redvine
       return Hashie::Mash.new(response.parsed_response)
     else
       records ? Hashie::Mash.new(response.parsed_response).data.records : Hashie::Mash.new(response.parsed_response).data
-    end
-  end
-
-  def get_query(isTwitter)
-    if isTwitter?
-      {twitterId: opts[:twitterId], twitterOauthSecret: opts[:twitterOauthSecret], twitterOauthToken: opts[:twitterOauthToken], deviceToken: @@deviceToken}
-    else
-      validate_connect_args(opts)
-      return {username: opts[:email], password: opts[:password], deviceToken: @@deviceToken}
     end
   end
 end
