@@ -13,7 +13,7 @@ class Redvine
   def connect(opts={})
     headers = {'User-Agent' => @@userAgent}
     query = get_query(opts)
-    url = opts[:isTwitter] ? 'users/authenticate/twitter' : 'users/authenticate'
+    url = opts[:isTwitter].eql?(true) ? 'users/authenticate/twitter' : 'users/authenticate'
     response = HTTParty.post(@@baseUrl + url, {body: query, headers: headers})
     @vine_key = response.parsed_response['data']['key']
     @username = response.parsed_response['data']['username']
@@ -50,14 +50,14 @@ class Redvine
 
   private
   def get_query(opts={})
-    if opts[:isTwitter]?
+    if opts[:isTwitter].eql?(true)
       {twitterId: opts[:twitterId], twitterOauthSecret: opts[:twitterOauthSecret], twitterOauthToken: opts[:twitterOauthToken], deviceToken: @@deviceToken}
     else
       validate_connect_args(opts)
       return {username: opts[:email], password: opts[:password], deviceToken: @@deviceToken}
     end
   end
-  
+
   def validate_connect_args(opts={})
     unless opts.has_key?(:email) and opts.has_key?(:email)
       raise(ArgumentError, 'You must specify both :email and :password')
