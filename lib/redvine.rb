@@ -53,16 +53,16 @@ class Redvine
     if opts[:isTwitter].eql?(true)
       {twitterId: opts[:twitterId], twitterOauthSecret: opts[:twitterOauthSecret], twitterOauthToken: opts[:twitterOauthToken], deviceToken: @@deviceToken}
     else
-      # validate_connect_args(opts)
+      validate_connect_args(opts)
       return {username: opts[:email], password: opts[:password], deviceToken: @@deviceToken}
     end
   end
 
-  # def validate_connect_args(opts={})
-  #   unless opts.has_key?(:email) and opts.has_key?(:email)
-  #     raise(ArgumentError, 'You must specify both :email and :password')
-  #   end
-  # end
+  def validate_connect_args(opts={})
+    unless opts.has_key?(:email) and opts.has_key?(:email)
+      raise(ArgumentError, 'You must specify both :email and :password')
+    end
+  end
 
   def session_headers
     {
